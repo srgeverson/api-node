@@ -1,0 +1,17 @@
+{
+    "_id": {
+        "$oid": "6069238699ce72cb4403d1ef"
+    },
+    "nome": "Administrador",
+    "email": "ivitechtecnologia@gmail.com",
+    "senha": "$2a$06$UEDjS115UrlKE5VI6YLHbu8Qm3QbtCdJPk2PQrfBeglFt7Tn.JQu.",
+    "ativo": true,
+    "createdAt": {
+        "$date": "2021-04-04T02:25:10.514Z"
+    },
+    "updatedAt": {
+        "$date": "2021-04-04T02:25:10.514Z"
+    },
+    "__v": 0,
+    "id": "1"
+}

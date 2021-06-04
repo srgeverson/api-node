@@ -1,0 +1,408 @@
+{
+	"info": {
+		"_postman_id": "8158806f-e445-4f9a-900c-cbb8b26a5b6c",
+		"name": "SAC-API-NODE",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Usuário",
+			"item": [
+				{
+					"name": "Perfil",
+					"item": [
+						{
+							"name": "Visualizar Perfil",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwNjkyMzg2OTljZTcyY2I0NDAzZDFlZiIsImlhdCI6MTYxNzUwMzM3NCwiZXhwIjoxNjE3NTg5Nzc0fQ.r1nPB-uPAsSpWtkKmDGqzCqfkU8FzKg0qIZS7SMc6hc",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8081/usuarios/perfil",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"usuarios",
+										"perfil"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Atualizar Perfil",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwNjkyNTU4NjQyMDBjY2M3YTAyNTRiZCIsImlhdCI6MTYxNzUwNDk0MywiZXhwIjoxNjE3NTkxMzQzfQ.WwYfy5K8XfrEe3gtW0wwKA_xFnqd4FwoIbh0CWD4AMo",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nome\": \"geverson1\",\n\t\"email\":\"geverson1@gmail.com\",\n\t\"senha\": \"zxc123asd\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8081/usuarios/perfil",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"usuarios",
+										"perfil"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Atualizar Foto Perfil",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwNjkyNTU4NjQyMDBjY2M3YTAyNTRiZCIsImlhdCI6MTYxNzUwNDk0MywiZXhwIjoxNjE3NTkxMzQzfQ.WwYfy5K8XfrEe3gtW0wwKA_xFnqd4FwoIbh0CWD4AMo",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "foto",
+											"type": "file",
+											"src": "/home/geverson/Imagens/projeto de si .png"
+										}
+									],
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8081/usuarios/perfil-imagem",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"usuarios",
+										"perfil-imagem"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Login",
+					"item": [
+						{
+							"name": "Login Usuários",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"ivitechtecnologia@gmail.com\",\n    \"senha\": \"@iv#262\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8081/usuarios/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"usuarios",
+										"login"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Listar Usuários",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwNjkyMzg2OTljZTcyY2I0NDAzZDFlZiIsImlhdCI6MTYxNzUwMzM3NCwiZXhwIjoxNjE3NTg5Nzc0fQ.r1nPB-uPAsSpWtkKmDGqzCqfkU8FzKg0qIZS7SMc6hc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/usuarios",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"usuarios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Visualizar Fotos Usuários",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwNjkyNTU4NjQyMDBjY2M3YTAyNTRiZCIsImlhdCI6MTYxNzUwNDk0MywiZXhwIjoxNjE3NTkxMzQzfQ.WwYfy5K8XfrEe3gtW0wwKA_xFnqd4FwoIbh0CWD4AMo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/usuarios/fotos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"usuarios",
+								"fotos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar Usuários",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwNjkyMzg2OTljZTcyY2I0NDAzZDFlZiIsImlhdCI6MTYxNzUwMzM3NCwiZXhwIjoxNjE3NTg5Nzc0fQ.r1nPB-uPAsSpWtkKmDGqzCqfkU8FzKg0qIZS7SMc6hc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/usuarios/6069238699ce72cb4403d1ef",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"usuarios",
+								"6069238699ce72cb4403d1ef"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar Usuários Copy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwNjkyMzg2OTljZTcyY2I0NDAzZDFlZiIsImlhdCI6MTYxNzUwMzM3NCwiZXhwIjoxNjE3NTg5Nzc0fQ.r1nPB-uPAsSpWtkKmDGqzCqfkU8FzKg0qIZS7SMc6hc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/usuarios/60692ef1061422d8529b874d",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"usuarios",
+								"60692ef1061422d8529b874d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cadastrar Usuários",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwNjkyMzg2OTljZTcyY2I0NDAzZDFlZiIsImlhdCI6MTYxNzUwMzM3NCwiZXhwIjoxNjE3NTg5Nzc0fQ.r1nPB-uPAsSpWtkKmDGqzCqfkU8FzKg0qIZS7SMc6hc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nome\": \"Geverson\",\n    \"email\": \"geverson@gmail.com\",\n    \"senha\": \"zxc123asd\",\n    \"ativo\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/usuarios",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"usuarios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Alterar Usuários",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwNjkyMzg2OTljZTcyY2I0NDAzZDFlZiIsImlhdCI6MTYxNzUwMzM3NCwiZXhwIjoxNjE3NTg5Nzc0fQ.r1nPB-uPAsSpWtkKmDGqzCqfkU8FzKg0qIZS7SMc6hc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nome\": \"root\",\n    \"senha\": \"zxc123asd\",\n    \"email\": \"root@gmail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/usuarios/606930394ac01edc1000d47b",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"usuarios",
+								"606930394ac01edc1000d47b"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Página Inicial",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081"
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "URL",
+			"value": "http://localhost:8081"
+		}
+	]
+}
