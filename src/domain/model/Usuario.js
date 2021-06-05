@@ -25,12 +25,12 @@ const Usuario = mysqlDataBase.define('usuarios', {
         allowNull: true
     },
     foto: {
-        type: Sequelize.BOOLEAN,
-        required: true
+        type: Sequelize.STRING,
+        allowNull: true
     },
     ativo: {
         type: Sequelize.BOOLEAN,
-        required: true
+        allowNull: false
     },
 });
 

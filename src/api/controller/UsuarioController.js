@@ -6,10 +6,22 @@ import Usuario from '../../domain/model/Usuario';
 import chave from '../../core/authority/chave';
 import config from '../../core/config';
 import { gmail, mailtrap } from '../../core/mail';
+import UsuarioService from '../../domain/service/UsuarioService';
+import exceptionHendler from '../exceptionHendler';
 
 class UsuarioController {
 
     async adicionar(req, res) {
+        const usuario = UsuarioService.salvar(req.body);
+        console.log(usuario);
+        // if (usuario.codigo !== 200 || usuario.codigo !== 201) {
+        //     return exceptionHendler(usuario.codigo);
+        // }
+
+        return usuario;
+    }
+
+    async bk(req, res) {
         //Apenas para teste
         // await sleep(3000);
 
@@ -19,14 +31,15 @@ class UsuarioController {
         //     });
         // }
 
+        var dados = req.body;
+
         const schema = Yup.object().shape({
             nome: Yup.string().required(),
             email: Yup.string().email().required(),
             senha: Yup.string().required().min(6),
-            ativo: Yup.boolean().required(),
         });
 
-        if (!(await schema.isValid(req.body))) {
+        if (!(await schema.isValid(dados))) {
             return res.json({
                 erro: true,
                 codigo: 103,
@@ -36,34 +49,38 @@ class UsuarioController {
         }
 
         const emailExistente = await Usuario.findAll({
-            where: { email: req.body.email }
+            where: {
+                email: dados.email
+            }
         });
 
-        console.log(emailExistente);
-        if (emailExistente !== []) {
-            return res.json({ erro: true, codigo: 102, mensagem: "Já existe usuário cadastrado com esse email.", dados: null });
+        if (emailExistente.length !== 0) {
+            return res.status(409).json({
+                erro: true,
+                codigo: 102,
+                mensagem: "Já existe usuário cadastrado com esse email."
+            });
         }
 
-        var dados = req.body;
         dados.senha = await bcrypt.hash(dados.senha, 6);
 
-        const usuario = await Usuario.create(
-            req.body
+        await Usuario.create(
+            dados
         ).then(() => {
             return res.status(201).json({
                 erro: false,
                 codigo: 201,
-                mensagem: "Usuário cadastrado com sucesso!",
-                usuario
+                mensagem: "Usuário cadastrado ",
             });
-        }).catch((erro) => {
-            return res.status(500).json({
+        }).catch(() => {
+            return res.status(400).json({
                 erro: true,
-                codigo: 500,
+                codigo: 400,
                 mensagem: "Erro ao cadastrar usuário.",
             });
         });
     }
+
 
     async ativar(req, res) {
         //Apenas para teste
