@@ -5,32 +5,11 @@ import jwt from 'jsonwebtoken';
 import Usuario from '../../domain/model/Usuario';
 import chave from '../../core/authority/chave';
 import config from '../../core/config';
-import { gmail, mailtrap } from '../../core/mail';
-import UsuarioService from '../../domain/service/UsuarioService';
-import exceptionHendler from '../exceptionHendler';
+import { mailtrap } from '../../core/mail';
 
 class UsuarioController {
 
     async adicionar(req, res) {
-        const usuario = UsuarioService.salvar(req.body);
-        console.log(usuario);
-        // if (usuario.codigo !== 200 || usuario.codigo !== 201) {
-        //     return exceptionHendler(usuario.codigo);
-        // }
-
-        return usuario;
-    }
-
-    async bk(req, res) {
-        //Apenas para teste
-        // await sleep(3000);
-
-        // function sleep(ms) {
-        //     return new Promise((resolve) => {
-        //         setTimeout(resolve, ms);
-        //     });
-        // }
-
         var dados = req.body;
 
         const schema = Yup.object().shape({
@@ -57,7 +36,7 @@ class UsuarioController {
         if (emailExistente.length !== 0) {
             return res.status(409).json({
                 erro: true,
-                codigo: 102,
+                codigo: 409,
                 mensagem: "Já existe usuário cadastrado com esse email."
             });
         }
