@@ -1,7 +1,7 @@
 import Sequelize from 'sequelize';
 import { mysqlDataBase } from '../../core/database';
 
-const Usuario = mysqlDataBase.define('usuarios', {
+const Funcionalidade = mysqlDataBase.define('funcionalidades', {
     id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
@@ -12,21 +12,9 @@ const Usuario = mysqlDataBase.define('usuarios', {
         type: Sequelize.STRING,
         allowNull: false
     },
-    email: {
+    descricao: {
         type: Sequelize.STRING,
         allowNull: false
-    },
-    senha: {
-        type: Sequelize.STRING,
-        allowNull: false
-    },
-    recuperarSenha: {
-        type: Sequelize.STRING,
-        allowNull: true
-    },
-    foto: {
-        type: Sequelize.BOOLEAN,
-        required: true
     },
     ativo: {
         type: Sequelize.BOOLEAN,
@@ -34,6 +22,6 @@ const Usuario = mysqlDataBase.define('usuarios', {
     },
 });
 
-Usuario.sync();
+Funcionalidade.sync();
 
-export default Usuario;
+export default Funcionalidade;

@@ -2,13 +2,14 @@ import { Router } from 'express';
 import autenticacao from '../middlewares/autenticacao';
 import enviarFotosUsuario from '../middlewares/enviarFotosUsuario';
 import UsuarioController from '../../api/controller/UsuarioController';
+import FuncionalidadeController from '../../api/controller/FuncionalidadeController';
 import multer from 'multer';
 
 const routes = new Router();
 const enviandoFotoUsuario = multer(enviarFotosUsuario);
 
 routes.get('/', (req, res) => {
-    res.send("Sistema de Atendimento ao Cliente - SAC");
+    res.send("API Node JS");
 });
 //Autorização de todas requisições
 routes.post('/usuarios/login', UsuarioController.login);
@@ -31,5 +32,14 @@ routes.get('/usuarios/:id', autenticacao, UsuarioController.buscar);
 routes.post('/usuarios', autenticacao, UsuarioController.adicionar);
 routes.put('/usuarios/:id', autenticacao, UsuarioController.atualizar);
 routes.put('/usuarios/ativar/:id', autenticacao, UsuarioController.ativar);
+
+//CRUD Funcionalidade
+//routes.delete('/funcionalidades/:id', autenticacao, FuncionalidadeController.remover);
+routes.get('/funcionalidades', autenticacao, FuncionalidadeController.listar);
+//routes.get('/funcionalidades/pesquisar', autenticacao, FuncionalidadeController.pesquisar);
+//routes.get('/funcionalidades/:id', autenticacao, FuncionalidadeController.buscar);
+//routes.post('/funcionalidades', autenticacao, FuncionalidadeController.adicionar);
+//routes.put('/funcionalidades/:id', autenticacao, FuncionalidadeController.atualizar);
+//routes.put('/funcionalidades/ativar/:id', FuncionalidadeController.ativar);
 
 export default routes;

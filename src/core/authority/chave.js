@@ -1,5 +1,5 @@
 export default {
-    //Nome correspondente da chave: sac_api_node
-    chaveSecreta: '29DB0017DC37D5231BA8D67334EE8675',
+    //Nome correspondente da chave: api_node
+    chaveSecreta: '84EDBC64B2E424F48FD21C08E26D9DD9',
     expiraEm: '1d'
 };

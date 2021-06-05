@@ -1,5 +1,5 @@
-# SAC - Sistema de Atendimento ao CLiente
-Este sistema servirá para acompanhar e gerenciar os atendimentos dos clientes.
+# API Node JS
+Este sistema servirá para gerenciar usuários.
 
 ## 📌 Versão ainda em produção
 1.0.0
@@ -30,11 +30,17 @@ $ npm install -D sucrase
 ### Banco de Dados MongoDB
 $ npm install --save mongodb
 
+### Mongoose traduz os dados do banco de dados para objetos JavaScript para que possam ser utilizados por sua aplicação.
+$ npm install --save mongoose
+
 ### Banco de Dados MySQL2
 $ npm install --save mysql2
 
-### Mongoose traduz os dados do banco de dados para objetos JavaScript para que possam ser utilizados por sua aplicação.
-$ npm install --save mongoose
+### Banco de Dados Postgres
+$ npm install --save pg pg-hstore
+
+### Criar a base de dados
+$ CREATE DATABASE api_node CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 ### Mongoose traduz os dados do banco de dados para objetos JavaScript para que possam ser utilizados por sua aplicação.
 $ npm install --save sequelize
@@ -66,10 +72,10 @@ $  npm install --save  nodemailer
 
 ```bash
 ### Realizando o Backup
-$ mongodump --db sac --out Pasta a ser salvo
+$ mongodump --db api_node --out Pasta a ser salvo
 
 ### Restaurando o banco de dados
-$ mongorestore --db sac Pasta onde o aquivo está salvo
+$ mongorestore --db api_node Pasta onde o aquivo está salvo
 
 ### Instalar as dependencias
 $ npm install
@@ -81,8 +87,8 @@ $ npm rum dev
 
 ## 👨‍💻 Equipe de Desenvolvimento
 
-* **Geverson Souza** - [Geverson Souza](https://linkedin.com.br/)
+* **Geverson Souza** - [Geverson Souza](https://www.linkedin.com/in/geverson-souza-033aa193/)
 
 ## ✒️ Autor
 
-* **Ivitech Tecnologia** - [Ivitech Tecnologia](https://ivitech.com.br/)
+* **Geverson Souza** - [Geverson Souza](https://www.linkedin.com/in/geverson-souza-033aa193/)

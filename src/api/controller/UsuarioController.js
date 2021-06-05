@@ -11,18 +11,13 @@ class UsuarioController {
 
     async adicionar(req, res) {
         //Apenas para teste
-        await sleep(3000);
+        // await sleep(3000);
 
-        function sleep(ms) {
-            return new Promise((resolve) => {
-                setTimeout(resolve, ms);
-            });
-        }
-
-        const emailExistente = await Usuario.findOne({ email: req.body.email });
-        if (emailExistente) {
-            return res.json({ erro: true, codigo: 102, mensagem: "Já existe usuário cadastrado com esse email.", dados: null });
-        }
+        // function sleep(ms) {
+        //     return new Promise((resolve) => {
+        //         setTimeout(resolve, ms);
+        //     });
+        // }
 
         const schema = Yup.object().shape({
             nome: Yup.string().required(),
@@ -31,19 +26,42 @@ class UsuarioController {
             ativo: Yup.boolean().required(),
         });
 
+        if (!(await schema.isValid(req.body))) {
+            return res.json({
+                erro: true,
+                codigo: 103,
+                mensagem: "Dados invalidos.",
+                dados: null
+            });
+        }
+
+        const emailExistente = await Usuario.findAll({
+            where: { email: req.body.email }
+        });
+
+        console.log(emailExistente);
+        if (emailExistente !== []) {
+            return res.json({ erro: true, codigo: 102, mensagem: "Já existe usuário cadastrado com esse email.", dados: null });
+        }
+
         var dados = req.body;
         dados.senha = await bcrypt.hash(dados.senha, 6);
-        console.log('Cheguei aqui...');
-        console.log(req.body);
 
-        if (!(await schema.isValid(req.body))) {
-            return res.json({ erro: true, codigo: 103, mensagem: "Dados invalidos.", dados: null });
-        }
-        const usuario = await Usuario.create(req.body, (err, small) => {
-            return err ?
-                res.json({ erro: true, codigo: 101, mensagem: "Erro ao cadastrar usuário.", dados: null })
-                :
-                res.status(201).json({ erro: false, codigo: null, mensagem: "Usuário cadastrado com sucesso!", dados: usuario });
+        const usuario = await Usuario.create(
+            req.body
+        ).then(() => {
+            return res.status(201).json({
+                erro: false,
+                codigo: 201,
+                mensagem: "Usuário cadastrado com sucesso!",
+                usuario
+            });
+        }).catch((erro) => {
+            return res.status(500).json({
+                erro: true,
+                codigo: 500,
+                mensagem: "Erro ao cadastrar usuário.",
+            });
         });
     }
 
@@ -465,13 +483,13 @@ class UsuarioController {
 
     async login(req, res) {
         //Apenas para teste
-        await sleep(3000);
+        // await sleep(3000);
 
-        function sleep(ms) {
-            return new Promise((resolve) => {
-                setTimeout(resolve, ms);
-            });
-        }
+        // function sleep(ms) {
+        //     return new Promise((resolve) => {
+        //         setTimeout(resolve, ms);
+        //     });
+        // }
         const { email, senha } = req.body;
 
         const usuarioExiste = await Usuario.findOne({ email: email });
