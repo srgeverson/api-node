@@ -30,7 +30,8 @@ const Usuario = mysqlDataBase.define('usuarios', {
     },
     ativo: {
         type: Sequelize.BOOLEAN,
-        allowNull: true
+        allowNull: true,
+        defaultValue: true
     },
 });
 
