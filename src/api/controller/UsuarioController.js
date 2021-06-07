@@ -10,7 +10,7 @@ import { mailtrap } from '../../core/mail';
 class UsuarioController {
 
     async adicionar(req, res) {
-        var dados = req.body;
+        let dados = req.body;
 
         const schema = Yup.object().shape({
             nome: Yup.string().required(),
@@ -62,7 +62,7 @@ class UsuarioController {
 
     async ativar(req, res) {
         const { id } = req.params;
-        var dados = req.body;
+        let dados = req.body;
 
         const schema = Yup.object().shape({
             ativo: Yup.boolean(),
@@ -113,7 +113,7 @@ class UsuarioController {
 
     async atualizar(req, res) {
         const { id } = req.params;
-        var dados = req.body;
+        let dados = req.body;
 
         if (!Number(id)) {
             return res.status(400).json({
@@ -180,68 +180,65 @@ class UsuarioController {
     };
 
     async atualizarSenhaRecuperada(req, res) {
-        console.log(req.body)
-        //Apenas para teste
-        await sleep(3000);
+        let dados = req.body;
 
-        function sleep(ms) {
-            return new Promise((resolve) => {
-                setTimeout(resolve, ms);
-            });
-        }
         const schema = Yup.object().shape({
-            id: Yup.string()
-                .required(),
-            recuperarSenha: Yup.string()
-                .required(),
-            senha: Yup.string()
-                .required()
-                .min(6)
+            id: Yup.number().required(),
+            recuperarSenha: Yup.string().required(),
+            senha: Yup.string().required().min(6)
         });
 
-        if (!(await schema.isValid(req.body))) {
-            return res.json({
+        if (!(await schema.isValid(dados))) {
+            return res.status(400).json({
                 error: true,
                 code: 101,
-                messsage: "Erro: Dados inválidos!"
+                messsage: "Dados inválidos!"
             });
         };
 
-        const { id, recuperarSenha } = req.body;
+        const usuarioExiste = await Usuario.findOne({ where: { id: dados.id } });
 
-        const usuarioExiste = await Usuario.findOne({ _id: id }, '_id');
-        if (!usuarioExiste) {
-            return res.json({
-                error: true,
-                code: 102,
-                messsage: "Erro: Usuário não encontrado!"
+        if (usuarioExiste === null) {
+            return res.status(404).json({
+                erro: true,
+                codigo: 404,
+                mensagem: "Usuário não encontrado!"
             });
-        }
+        };
 
-        const validarChave = await Usuario.findOne({ recuperarSenha: recuperarSenha }, '_id');
-        if (!validarChave) {
-            return res.json({
+        const validarChave = await Usuario.findOne({
+            attributes: ['id'],
+            where: { recuperarSenha: dados.recuperarSenha }
+        });
+
+
+        if (validarChave === null) {
+            return res.status(400).json({
                 error: true,
-                code: 110,
-                mensagem: "Erro: URL inválida!"
+                code: 400,
+                mensagem: "Senha solicitada inválida, recomendamos solicitar uma nova recuperação!"
             })
         }
 
-        var dados = req.body;
+
         if (dados.senha) {
             dados.senha = await bcrypt.hash(dados.senha, 8);
         };
 
-        await Usuario.updateOne({ _id: dados.id }, { senha: dados.senha, recuperarSenha: null }, (err) => {
-            if (err) return res.json({
-                error: true,
-                code: 111,
-                mensagem: "Erro ao editar a senha!"
+        await Usuario.update(
+            { senha: dados.senha, recuperarSenha: null },
+            { where: { id: dados.id } }
+        ).then(() => {
+            return res.status(200).json({
+                erro: false,
+                codigo: 200,
+                mensagem: "Senha alterada com sucesso!"
             });
-
-            return res.json({
-                error: false,
-                mensagem: "Senha editada com sucesso!"
+        }).catch((erro) => {
+            return res.status(500).json({
+                erro: true,
+                codigo: 500,
+                mensagem: "Erro ao alterar a senha!"
             });
         });
     };
@@ -295,7 +292,7 @@ class UsuarioController {
             };
         };
 
-        var dados = req.body;
+        let dados = req.body;
         if (dados.senha) {
             dados.senha = await bcrypt.hash(dados.senha, 8);
         };
@@ -536,11 +533,13 @@ class UsuarioController {
     }
 
     async recuperarSenha(req, res) {
+        let dados = req.body;
+
         const schema = Yup.object().shape({
             email: Yup.string().required()
         });
 
-        if (!(await schema.isValid(req.body))) {
+        if (!(await schema.isValid(dados))) {
             return res.json({
                 erro: true,
                 codigo: 101,
@@ -548,74 +547,77 @@ class UsuarioController {
             });
         };
 
-        var dados = req.body;
-        const emailExiste = await Usuario.findOne({ email: dados.email });
-        if (!emailExiste) {
-            return res.json({
+        const emailExiste = await Usuario.findOne({ where: { email: dados.email, ativo: true } });
+
+
+        if (emailExiste === null) {
+            return res.status(404).json({
                 erro: true,
-                codigo: 102,
-                mensagem: "Nenhum usuário encontrado com esse e-mail!"
+                codigo: 404,
+                mensagem: "Nenhum usuário encontrado com esse e-mail, ou este usuário está desativado!"
             });
         };
 
         dados.recuperarSenha = Math.random().toString(36).substr(3, 10);
+        dados.nome = emailExiste.nome;
 
-        const usuario = await Usuario.updateOne({ email: dados.email }, dados, (err) => {
-            if (err) return res.json({
+        await Usuario.update(dados, {
+            where: { email: dados.email }
+        }).then(() => {
+            let mensagem = {
+                from: "geverson@gmail.com",
+                to: "geverson@gmail.com",
+                subject: "API Node JS - Recuperação de Senha",
+                text: `${emailExiste.nome} solicitação de recuperação de senha, recomendamos troca-lá logo após o primeiro login. Sua senha provisória senha é: ${dados.recuperarSenha}`,
+                html: `Segue o link para trocar a senha<br><a href="http://localhost:3000/api-node/nova-senha/${dados.recuperarSenha}">Clique aqui.</a>`
+            };
+
+            mailtrap.sendMail(mensagem, (retorno) => {
+                if (retorno) {
+                    return res.status(500).json({
+                        erro: true,
+                        codigo: 500,
+                        mensagem: "Erro ao enviar a senha de recuperação da conta!"
+                    });
+                } else {
+                    return res.status(200).json({
+                        erro: false,
+                        codigo: 200,
+                        mensagem: "Enviado no e-mail as intruções para recuperar a senha, verifique sua caixa de entrada!"
+                    });
+                }
+            });
+        }).catch((erro) => {
+            return res.status(500).json({
                 erro: true,
-                codigo: 129,
-                mensagem: "Não foi encontrado nenhum usuário com este email!"
+                codigo: 500,
+                mensagem: "Houve um erro na solicitação de senha realizada com sucesso!"
             });
         });
-
-        let mensagem = {
-            from: "ivitechtecnologia@gmail.com",
-            to: "ivitechtecnologia@gmail.com",
-            subject: "SAC - Recuperação de Senha",
-            text: `${usuario.nome}Solicitação de recuperação de senha, recomendamos troca-lá logo após o primeiro login. Sua senha provisória senha é: ${dados.recuperarSenha}`,
-            html: `Segue o link para trocar a senha<br><a href="http://localhost:3000/nova-senha/${dados.recuperarSenha}">Clique aqui.</a>`
-        };
-
-        mailtrap.sendMail(mensagem, (retorno) => {
-            if (retorno) {
-                return res.json({
-                    erro: true,
-                    codigo: 129,
-                    mensagem: "Erro ao enviar a senha de recuperação da conta!"
-                });
-            } else {
-                return res.json({
-                    erro: false,
-                    mensagem: "Enviado no e-mail as intruções para recuperar a senha, verifique sua caixa de entrada!"
-                });
-            }
-        })
     }
 
     async validacaoRecuperarSenha(req, res) {
-        //Apenas para teste
-        await sleep(3000);
+        const { recuperarSenha } = req.params;
 
-        function sleep(ms) {
-            return new Promise((resolve) => {
-                setTimeout(resolve, ms);
-            });
-        }
-        Usuario.findOne({ recuperarSenha: req.params.recuperarSenha }, '_id').then((usuario) => {
-            if (usuario._id) {
-                return res.json({
-                    erro: false,
-                    usuario: usuario
-                })
-            }
-        }).catch((err) => {
-            return res.status(400).json({
+        const usuarioValidacaoRecuperarSenha = await Usuario.findOne({
+            attributes: ['id', 'nome', 'email', 'recuperarSenha'],
+            where: { recuperarSenha }
+        });
+
+        if (usuarioValidacaoRecuperarSenha === null) {
+            return res.status(404).json({
                 erro: true,
-                codigo: 103,
-                mensagem: "Erro: URL inválida!"
+                codigo: 404,
+                mensagem: "Senha recuperada inválida, recomendamos fazer uma nova solicitação!"
             });
-        })
-    };
+        };
+
+        return res.status(200).json({
+            erro: false,
+            codigo: 200,
+            usuario: usuarioValidacaoRecuperarSenha
+        });
+    }
 
     async visualizarPerfil(req, res) {
         //Apenas para teste
@@ -647,7 +649,7 @@ class UsuarioController {
                 mensagem: "Perfil não encontrado!"
             });
         });
-    };
+    }
 }
 
 export default new UsuarioController();
