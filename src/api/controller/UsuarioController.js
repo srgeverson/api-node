@@ -454,25 +454,19 @@ class UsuarioController {
     };
 
     async listar(req, res) {
-        //Apenas para teste
-        await sleep(3000);
-
-        function sleep(ms) {
-            return new Promise((resolve) => {
-                setTimeout(resolve, ms);
-            });
-        }
-
-        await Usuario.find({}).select("-senha").then((usuarios) => {
+        await Usuario.findAll({
+            attributes: ['id', 'nome', 'email', 'recuperarSenha']
+        }).then((usuarios) => {
             return res.status(200).json({
                 erro: false,
+                codigo: 200,
                 usuarios: usuarios
             });
         }).catch((erro) => {
-            return res.status(400).json({
+            return res.status(500).json({
                 erro: true,
-                codigo: 106,
-                mensagem: "Não foi possível executar a solicitação!"
+                codigo: 500,
+                mensagem: "Não foi possível listar os usuário!"
             });
         });
     };
