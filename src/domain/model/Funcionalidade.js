@@ -18,8 +18,11 @@ const Funcionalidade = mysqlDataBase.define('funcionalidades', {
     },
     ativo: {
         type: Sequelize.BOOLEAN,
-        required: true
+        required: true,
+        defaultValue: true
     },
+}, {
+    timestamps: false
 });
 
 Funcionalidade.sync();
