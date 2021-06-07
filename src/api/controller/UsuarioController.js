@@ -2,6 +2,7 @@ import * as Yup from 'yup';
 import bcrypt from 'bcryptjs';
 import fs from 'fs';
 import jwt from 'jsonwebtoken';
+import { Op } from 'sequelize';
 import Usuario from '../../domain/model/Usuario';
 import chave from '../../core/authority/chave';
 import config from '../../core/config';
@@ -393,39 +394,30 @@ class UsuarioController {
     };
 
     async pesquisar(req, res) {
-        //Apenas para teste
-        await sleep(3000);
+        let { nome, email } = req.query;
 
-        function sleep(ms) {
-            return new Promise((resolve) => {
-                setTimeout(resolve, ms);
+        nome = { [Op.like]: `%${nome === undefined ? '' : nome}%` };
+        email = { [Op.like]: `%${email === undefined ? '' : email}%` };
+
+        await Usuario.findAll({
+            attributes: ['id', 'nome', 'email', 'ativo', 'createdAt', 'updatedAt'],
+            where: {
+                nome, email
+            }
+        }).then((usuarios) => {
+            return res.status(200).json({
+                erro: false,
+                codigo: 200,
+                usuarios: usuarios
             });
-        }
-        const { nome, email } = req.query;
-
-        //console.log(req.query);
-
-        const parametros = {};
-        nome && nome !== null ? parametros['nome'] = { $regex: new RegExp(`^${nome}`, "i") } : '';
-        email && email !== null ? parametros['email'] = { $regex: new RegExp(`^${email}`, "i") } : '';
-
-        //console.log(parametros);
-
-        Usuario.find(parametros, '_id id nome email ativo createdAt updatedAt').then((usuarios) => {
-            if (!usuarios) {
-                return res.status(404).json({ erro: true, codigo: 104, mensagem: "Usuário não encontrado!" });
-            };
-
-            return res.status(200).json({ erro: false, usuarios: usuarios });
-
-        }).catch((err) => {
-            return res.status(400).json({
+        }).catch((erro) => {
+            return res.status(500).json({
                 erro: true,
-                codigo: 150,
-                mensagem: "Erro ao pesquisar o usuário!"
-            })
+                codigo: 500,
+                mensagem: "Não foi possível listar os usuário!"
+            });
         });
-    };
+    }
 
     async publicarFotos(req, res) {
         //Apenas para teste
@@ -455,7 +447,7 @@ class UsuarioController {
 
     async listar(req, res) {
         await Usuario.findAll({
-            attributes: ['id', 'nome', 'email', 'recuperarSenha']
+            attributes: ['id', 'nome', 'email', 'ativo', 'createdAt', 'updatedAt']
         }).then((usuarios) => {
             return res.status(200).json({
                 erro: false,
