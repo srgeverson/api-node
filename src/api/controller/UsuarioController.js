@@ -94,12 +94,12 @@ class UsuarioController {
             });
         };
 
-
         await Usuario.update(dados, {
             where: { id: id }
         }).then(() => {
-            return res.json({
+            return res.status(200).json({
                 erro: false,
+                codigo: 200,
                 mensagem: "Usuário ativado/desativado com sucesso!"
             });
         }).catch((erro) => {
@@ -112,45 +112,44 @@ class UsuarioController {
     }
 
     async atualizar(req, res) {
-        await sleep(3000);
+        const { id } = req.params;
+        var dados = req.body;
 
-        function sleep(ms) {
-            return new Promise((resolve) => {
-                setTimeout(resolve, ms);
+        if (!Number(id)) {
+            return res.status(400).json({
+                erro: true,
+                codigo: 400,
+                mensagem: "Parâmetro deve ser um valor numérico!"
             });
         }
 
         const schema = Yup.object().shape({
             nome: Yup.string(),
-            email: Yup.string()
-                .email(),
-            senha: Yup.string()
-                .min(6)
+            email: Yup.string().email(),
+            senha: Yup.string().min(6)
         });
 
-        if (!(await schema.isValid(req.body))) {
+        if (!(await schema.isValid(dados))) {
             return res.status(400).json({
                 erro: true,
-                codigo: 108,
+                codigo: 400,
                 mensagem: "Dados do formulário inválido!"
             });
         };
 
-        const { email } = req.body;
+        const usuarioExiste = await Usuario.findOne({ where: { id: id } });
 
-        const usuarioExiste = await Usuario.findOne({ _id: req.params.id });
-
-        if (!usuarioExiste) {
-            return res.status(400).json({
+        if (usuarioExiste === null) {
+            return res.status(404).json({
                 erro: true,
-                codigo: 109,
+                codigo: 404,
                 mensagem: "Usuário não encontrado!"
             });
         };
 
-        if (email != usuarioExiste.email) {
-            const emailExiste = await Usuario.findOne({ email });
-            if (emailExiste) {
+        if (dados.email != usuarioExiste.email) {
+            const emailExiste = await Usuario.findOne({ email: dados.email });
+            if (emailExiste !== null) {
                 return res.status(400).json({
                     erro: true,
                     codigo: 110,
@@ -159,21 +158,23 @@ class UsuarioController {
             };
         };
 
-        var dados = req.body;
         if (dados.senha) {
             dados.senha = await bcrypt.hash(dados.senha, 8);
         };
 
-        await Usuario.updateOne({ _id: dados._id }, dados, (err) => {
-            if (err) return res.status(400).json({
-                erro: true,
-                codigo: 111,
-                mensagem: "Erro ao atualizar usuário!"
-            });
-
-            return res.json({
+        await Usuario.update(dados, {
+            where: { id: id }
+        }).then(() => {
+            return res.status(200).json({
                 erro: false,
-                mensagem: "Usuário atualizado com sucesso!"
+                codigo: 200,
+                mensagem: "Usuário alterado com sucesso!"
+            });
+        }).catch((erro) => {
+            return res.status(500).json({
+                erro: true,
+                codigo: 500,
+                mensagem: "Erro ao alterar usuário!"
             });
         });
     };
@@ -482,13 +483,13 @@ class UsuarioController {
     async login(req, res) {
         const { email, senha } = req.body;
 
-        const usuarioExiste = await Usuario.findOne({ where: { email: email } });
+        const usuarioExiste = await Usuario.findOne({ where: { email: email, ativo: true } });
 
         if (usuarioExiste === null) {
             return res.status(404).json({
                 error: true,
                 codigo: 404,
-                mensagem: "Usuário não encontrado!"
+                mensagem: "Usuário não encontrado, ou usuário está desativado!"
             });
         }
 
@@ -533,7 +534,6 @@ class UsuarioController {
 
         return res.status(200).json({ erro: false, mensagem: "Usuário apagado com sucesso!" });
     }
-
 
     async recuperarSenha(req, res) {
         const schema = Yup.object().shape({
